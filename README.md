@@ -33,7 +33,7 @@ FinTrack is a modern, responsive web application for personal finance management
 
 ## 🚀 Live Demo
 
-You can try out FinTrack here: [Live Demo Link] (Replace with your deployed app link)
+You can try out FinTrack here: [Live Demo Link] ()
 
 ## 💻 Technologies Used
 
@@ -125,7 +125,7 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 
 ## 👥 Authors
 
-- **Your Name** - *Initial work* - [YourGitHub](https://github.com/yourusername)
+- **Your Name** - *Initial work* - [YourGitHub](https://github.com/aman-24052001)
 
 ## 🙏 Acknowledgments
 
@@ -137,9 +137,8 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 ## 📧 Contact
 
 If you have any questions or suggestions, please reach out:
-- Email: your.email@example.com
-- Twitter: [@yourusername](https://twitter.com/yourusername)
-- GitHub: [yourusername](https://github.com/yourusername)
+- Email: amankumar24052001@gmail.com
+- GitHub: [yourusername](https://github.com/aman-24052001)
 
 ---
-Made with ❤️ by [Your Name]
+Made with ❤️ by [Aman Kumar]
