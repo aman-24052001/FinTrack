@@ -125,7 +125,7 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 
 ## 👥 Authors
 
-- **Your Name** - *Initial work* - [YourGitHub](https://github.com/aman-24052001)
+- **Your Name** - *Initial work* - [aman-24052001](https://github.com/aman-24052001)
 
 ## 🙏 Acknowledgments
 
@@ -138,7 +138,7 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 
 If you have any questions or suggestions, please reach out:
 - Email: amankumar24052001@gmail.com
-- GitHub: [yourusername](https://github.com/aman-24052001)
+- GitHub: [aman-24052001](https://github.com/aman-24052001)
 
 ---
 Made with ❤️ by [Aman Kumar]
