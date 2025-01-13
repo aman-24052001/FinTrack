@@ -1,0 +1,903 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="FinTrack - Personal Finance Management Application">
+    <title>FinTrack - Personal Finance Manager</title>
+    <!-- External Dependencies -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/sweetalert2/11.7.32/sweetalert2.min.css">
+    <style>
+        /* CSS Variables for Theming */
+        :root {
+            --primary-color: #4e73df;
+            --secondary-color: #858796;
+            --success-color: #1cc88a;
+            --danger-color: #e74a3b;
+            --warning-color: #f6c23e;
+            --light-color: #f8f9fc;
+            --dark-color: #5a5c69;
+            --card-shadow: 0 0.15rem 1.75rem 0 rgba(58, 59, 69, 0.15);
+            --transition-speed: 0.3s;
+        }
+
+        /* Base Styles */
+        body {
+            font-family: 'Nunito', -apple-system, system-ui, sans-serif;
+            background: linear-gradient(135deg, var(--primary-color) 0%, #224abe 100%);
+            min-height: 100vh;
+        }
+
+        .app-logo {
+            width: 80px;
+            height: 80px;
+            margin-bottom: 1rem;
+        }
+
+        /* Auth Container Styles */
+        .auth-wrapper {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            padding: 1.25rem;
+        }
+
+        .auth-inner {
+            width: 100%;
+            max-width: 28rem;
+        }
+
+        .auth-form-container {
+            background: var(--light-color);
+            border-radius: 1rem;
+            box-shadow: var(--card-shadow);
+            padding: 2.5rem;
+            animation: fadeInUp 0.5s ease;
+        }
+
+        .auth-title {
+            color: var(--primary-color);
+            font-size: 1.75rem;
+            font-weight: 700;
+            margin-bottom: 0.625rem;
+        }
+
+        .auth-subtitle {
+            color: var(--secondary-color);
+            margin-bottom: 1.875rem;
+        }
+
+        /* Form Styles */
+        .form-group {
+            margin-bottom: 1.25rem;
+        }
+
+        .form-control {
+            border-radius: 0 0.5rem 0.5rem 0;
+            height: 3rem;
+        }
+
+        .input-group-text {
+            border-radius: 0.5rem 0 0 0.5rem;
+            background: var(--light-color);
+            width: 3rem;
+            justify-content: center;
+        }
+
+        /* Dashboard Styles */
+        .stats-card {
+            background: var(--light-color);
+            border-radius: 1rem;
+            padding: 1.25rem;
+            box-shadow: var(--card-shadow);
+            transition: transform var(--transition-speed) ease;
+        }
+
+        .stats-card:hover {
+            transform: translateY(-0.3125rem);
+        }
+
+        .stats-icon {
+            width: 4rem;
+            height: 4rem;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+        }
+
+        /* Transaction Cards */
+        .transaction-card {
+            transition: all var(--transition-speed) ease;
+        }
+
+        .transaction-card:hover {
+            transform: translateY(-0.1875rem);
+            box-shadow: var(--card-shadow);
+        }
+
+        /* Animations */
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(1.25rem);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .animate-fade-in {
+            animation: fadeInUp 0.5s ease;
+        }
+
+        /* Responsive Adjustments */
+        @media (max-width: 768px) {
+            .auth-form-container {
+                padding: 1.5rem;
+            }
+
+            .stats-card {
+                margin-bottom: 1rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Auth Container -->
+    <div id="authContainer" class="auth-wrapper">
+        <div class="auth-inner">
+            <div class="auth-form-container">
+                <div class="text-center mb-4">
+                    <i class="fas fa-wallet fa-3x text-primary mb-3"></i>
+                    <h1 class="auth-title">FinTrack</h1>
+                    <p class="auth-subtitle">Your Personal Finance Manager</p>
+                </div>
+                
+                <!-- Login Form -->
+                <form id="loginForm" class="auth-form">
+                    <div class="form-group">
+                        <label>Email</label>
+                        <div class="input-group">
+                            <span class="input-group-text">
+                                <i class="fas fa-envelope"></i>
+                            </span>
+                            <input type="email" class="form-control" required 
+                                   placeholder="Enter your email">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label>Password</label>
+                        <div class="input-group">
+                            <span class="input-group-text">
+                                <i class="fas fa-lock"></i>
+                            </span>
+                            <input type="password" class="form-control" required
+                                   placeholder="Enter your password">
+                        </div>
+                    </div>
+                    <button type="submit" class="btn btn-primary w-100 py-2">Sign In</button>
+                </form>
+                
+                <p class="text-center mt-3">
+                    New to FinTrack? 
+                    <a href="#" id="showRegister" class="text-primary">Create Account</a>
+                </p>
+            </div>
+            
+            <!-- Register Form -->
+            <div class="auth-form-container d-none" id="registerContainer">
+                <div class="text-center mb-4">
+                    <i class="fas fa-wallet fa-3x text-primary mb-3"></i>
+                    <h1 class="auth-title">FinTrack</h1>
+                    <p class="auth-subtitle">Create Your Account</p>
+                </div>
+                
+                <form id="registerForm" class="auth-form">
+                    <div class="form-group">
+                        <label>Full Name</label>
+                        <div class="input-group">
+                            <span class="input-group-text">
+                                <i class="fas fa-user"></i>
+                            </span>
+                            <input type="text" class="form-control" required
+                                   placeholder="Enter your full name">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label>Email</label>
+                        <div class="input-group">
+                            <span class="input-group-text">
+                                <i class="fas fa-envelope"></i>
+                            </span>
+                            <input type="email" class="form-control" required
+                                   placeholder="Enter your email">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label>Password</label>
+                        <div class="input-group">
+                            <span class="input-group-text">
+                                <i class="fas fa-lock"></i>
+                            </span>
+                            <input type="password" class="form-control" required
+                                   placeholder="Choose a password"
+                                   pattern="^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{8,}$"
+                                   title="Password must be at least 8 characters long and include both letters and numbers">
+                        </div>
+                    </div>
+                    <button type="submit" class="btn btn-success w-100 py-2">Create Account</button>
+                </form>
+                
+                <p class="text-center mt-3">
+                    Already have an account? 
+                    <a href="#" id="showLogin" class="text-primary">Sign In</a>
+                </p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Dashboard Container -->
+    <div id="dashboardContainer" class="d-none">
+        <nav class="navbar navbar-expand-lg navbar-dark bg-primary shadow-sm">
+            <div class="container-fluid">
+                <div class="d-flex align-items-center">
+                    <i class="fas fa-wallet fa-2x text-white me-2"></i>
+                    <span class="text-white fw-bold fs-4">FinTrack</span>
+                </div>
+                <div class="d-flex align-items-center">
+                    <div class="user-info me-3">
+                        <i class="fas fa-user-circle fa-2x text-white"></i>
+                        <span id="userName" class="text-white ms-2"></span>
+                    </div>
+                    <button class="btn btn-outline-light" onclick="App.logout()">
+                        <i class="fas fa-sign-out-alt"></i> Logout
+                    </button>
+                </div>
+            </div>
+        </nav>
+
+        <div class="container mt-4">
+            <div class="row g-4">
+                <div class="col-md-4">
+                    <div class="stats-card">
+                        <div class="d-flex align-items-center">
+                            <div class="stats-icon bg-success-subtle text-success">
+                                <i class="fas fa-arrow-up"></i>
+                            </div>
+                            <div class="ms-3">
+                                <h5 class="text-muted mb-0">Total Income</h5>
+                                <h3 id="totalIncome" class="mb-0">₹0.00</h3>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="stats-card">
+                        <div class="d-flex align-items-center">
+                            <div class="stats-icon bg-danger-subtle text-danger">
+                                <i class="fas fa-arrow-down"></i>
+                            </div>
+                            <div class="ms-3">
+                                <h5 class="text-muted mb-0">Total Expenses</h5>
+                                <h3 id="totalExpenses" class="mb-0">₹0.00</h3>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="stats-card">
+                        <div class="d-flex align-items-center">
+                            <div class="stats-icon bg-primary-subtle text-primary">
+                                <i class="fas fa-wallet"></i>
+                            </div>
+                            <div class="ms-3">
+                                <h5 class="text-muted mb-0">Balance</h5>
+                                <h3 id="totalBalance" class="mb-0">₹0.00</h3>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row mt-4">
+                <div class="col-md-8">
+                    <div class="card shadow-sm">
+                        <div class="card-body">
+                            <h4 class="card-title">Income vs Expenses</h4>
+                            <canvas id="lineChart"></canvas>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="card shadow-sm">
+                        <div class="card-body">
+                            <h4 class="card-title">Expense Distribution</h4>
+                            <canvas id="pieChart"></canvas>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card shadow-sm mt-4">
+                <div class="card-body">
+                    <div class="d-flex justify-content-between align-items-center mb-4">
+                        <h4 class="card-title mb-0">Recent Transactions</h4>
+                        <button class="btn btn-primary" onclick="TransactionManager.showAddModal()">
+                            <i class="fas fa-plus"></i> Add Transaction
+                        </button>
+                    </div>
+                    <div id="transactionsList" class="row g-3"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Scripts -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/sweetalert2/11.7.32/sweetalert2.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.9.1/chart.min.js"></script>
+
+    <script>
+// Constants
+const CONSTANTS = {
+    STORAGE_KEYS: {
+        USERS: 'fintrack_users',
+        CURRENT_USER: 'fintrack_current_user'
+    },
+    CHART_COLORS: {
+        INCOME: '#1cc88a',
+        EXPENSE: '#e74a3b',
+        BACKGROUND: ['rgba(28, 200, 138, 0.8)', 'rgba(231, 74, 59, 0.8)']
+    }
+};
+
+// Utility Functions
+const Utils = {
+    formatCurrency: (amount) => {
+        return new Intl.NumberFormat('en-IN', {
+            style: 'currency',
+            currency: 'INR'
+        }).format(amount);
+    },
+
+    showAlert: async (options) => {
+        return Swal.fire({
+            icon: options.icon || 'info',
+            title: options.title,
+            text: options.text,
+            ...options
+        });
+    },
+
+    validatePassword: (password) => {
+        const regex = /^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{8,}$/;
+        return regex.test(password);
+    }
+};
+
+// Storage Manager
+class StorageManager {
+    static getItem(key) {
+        return JSON.parse(localStorage.getItem(key));
+    }
+
+    static setItem(key, value) {
+        localStorage.setItem(key, JSON.stringify(value));
+    }
+
+    static removeItem(key) {
+        localStorage.removeItem(key);
+    }
+}
+
+// User Manager
+class UserManager {
+    static get currentUser() {
+        return StorageManager.getItem(CONSTANTS.STORAGE_KEYS.CURRENT_USER);
+    }
+
+    static set currentUser(user) {
+        if (user) {
+            StorageManager.setItem(CONSTANTS.STORAGE_KEYS.CURRENT_USER, user);
+        } else {
+            StorageManager.removeItem(CONSTANTS.STORAGE_KEYS.CURRENT_USER);
+        }
+    }
+
+    static getAllUsers() {
+        return StorageManager.getItem(CONSTANTS.STORAGE_KEYS.USERS) || {};
+    }
+
+    static saveUsers(users) {
+        StorageManager.setItem(CONSTANTS.STORAGE_KEYS.USERS, users);
+    }
+
+    static async register(name, email, password) {
+        const users = this.getAllUsers();
+
+        if (users[email]) {
+            throw new Error('Email already registered');
+        }
+
+        if (!Utils.validatePassword(password)) {
+            throw new Error('Password must be at least 8 characters with letters and numbers');
+        }
+
+        users[email] = {
+            name,
+            password, // In production, this should be hashed
+            transactions: [],
+            createdAt: new Date().toISOString()
+        };
+
+        this.saveUsers(users);
+        return true;
+    }
+
+    static async login(email, password) {
+        const users = this.getAllUsers();
+        const user = users[email];
+
+        if (!user || user.password !== password) {
+            throw new Error('Invalid credentials');
+        }
+
+        this.currentUser = {
+            email,
+            name: user.name
+        };
+
+        return true;
+    }
+
+    static logout() {
+        this.currentUser = null;
+    }
+}
+
+// Transaction Manager
+class TransactionManager {
+    static getTransactions() {
+        const users = UserManager.getAllUsers();
+        return users[UserManager.currentUser.email].transactions;
+    }
+
+    static addTransaction(transaction) {
+        const users = UserManager.getAllUsers();
+        const user = users[UserManager.currentUser.email];
+        
+        user.transactions.push({
+            id: Date.now(),
+            ...transaction,
+            timestamp: new Date().toISOString()
+        });
+
+        UserManager.saveUsers(users);
+        return true;
+    }
+
+    static updateTransaction(id, updatedData) {
+        const users = UserManager.getAllUsers();
+        const user = users[UserManager.currentUser.email];
+        const index = user.transactions.findIndex(t => t.id === id);
+
+        if (index !== -1) {
+            user.transactions[index] = {
+                ...user.transactions[index],
+                ...updatedData,
+                updatedAt: new Date().toISOString()
+            };
+            UserManager.saveUsers(users);
+            return true;
+        }
+        return false;
+    }
+
+    static deleteTransaction(id) {
+        const users = UserManager.getAllUsers();
+        const user = users[UserManager.currentUser.email];
+        user.transactions = user.transactions.filter(t => t.id !== id);
+        UserManager.saveUsers(users);
+        return true;
+    }
+
+    static async showAddModal() {
+        const result = await Utils.showAlert({
+            title: 'Add New Transaction',
+            html: `
+                <div class="form-group">
+                    <input id="swal-description" class="form-control mb-3" placeholder="Description">
+                    <input id="swal-amount" class="form-control mb-3" type="number" step="0.01" placeholder="Amount">
+                    <select id="swal-type" class="form-control mb-3">
+                        <option value="income">Income</option>
+                        <option value="expense">Expense</option>
+                    </select>
+                    <input id="swal-date" class="form-control" type="date" value="${new Date().toISOString().split('T')[0]}">
+                </div>
+            `,
+            showCancelButton: true,
+            confirmButtonText: 'Add Transaction',
+            focusConfirm: false,
+            preConfirm: () => ({
+                description: document.getElementById('swal-description').value,
+                amount: parseFloat(document.getElementById('swal-amount').value),
+                type: document.getElementById('swal-type').value,
+                date: document.getElementById('swal-date').value
+            })
+        });
+
+        if (result.value) {
+            this.addTransaction(result.value);
+            DashboardUI.updateDashboard();
+        }
+    }
+}
+
+// Chart Manager
+class ChartManager {
+    static lineChart = null;
+    static pieChart = null;
+
+    static initializeCharts() {
+        this.initializeLineChart();
+        this.initializePieChart();
+    }
+
+    static initializeLineChart() {
+        const ctx = document.getElementById('lineChart').getContext('2d');
+        this.lineChart = new Chart(ctx, {
+            type: 'line',
+            data: {
+                labels: [],
+                datasets: [
+                    {
+                        label: 'Income',
+                        borderColor: CONSTANTS.CHART_COLORS.INCOME,
+                        data: []
+                    },
+                    {
+                        label: 'Expenses',
+                        borderColor: CONSTANTS.CHART_COLORS.EXPENSE,
+                        data: []
+                    }
+                ]
+            },
+            options: {
+                responsive: true,
+                plugins: {
+                    legend: {
+                        position: 'top'
+                    }
+                },
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        ticks: {
+                            callback: value => Utils.formatCurrency(value)
+                        }
+                    }
+                }
+            }
+        });
+    }
+
+    static initializePieChart() {
+        const ctx = document.getElementById('pieChart').getContext('2d');
+        this.pieChart = new Chart(ctx, {
+            type: 'doughnut',
+            data: {
+                labels: ['Income', 'Expenses'],
+                datasets: [{
+                    data: [0, 0],
+                    backgroundColor: CONSTANTS.CHART_COLORS.BACKGROUND
+                }]
+            },
+            options: {
+                responsive: true,
+                plugins: {
+                    legend: {
+                        position: 'bottom'
+                    }
+                }
+            }
+        });
+    }
+
+    static updateCharts(transactions) {
+        const monthlyData = this.processMonthlyData(transactions);
+        
+        this.lineChart.data.labels = monthlyData.labels;
+        this.lineChart.data.datasets[0].data = monthlyData.incomeData;
+        this.lineChart.data.datasets[1].data = monthlyData.expenseData;
+        this.lineChart.update();
+
+        const totalIncome = transactions
+            .filter(t => t.type === 'income')
+            .reduce((sum, t) => sum + t.amount, 0);
+        
+        const totalExpenses = transactions
+            .filter(t => t.type === 'expense')
+            .reduce((sum, t) => sum + t.amount, 0);
+
+        this.pieChart.data.datasets[0].data = [totalIncome, totalExpenses];
+        this.pieChart.update();
+    }
+
+    static processMonthlyData(transactions) {
+        const monthlyData = {};
+        const last6Months = Array.from({length: 6}, (_, i) => {
+            const d = new Date();
+            d.setMonth(d.getMonth() - i);
+            return d.toLocaleString('default', { month: 'short' });
+        }).reverse();
+
+        last6Months.forEach(month => {
+            monthlyData[month] = { income: 0, expense: 0 };
+        });
+
+        transactions.forEach(transaction => {
+            const month = new Date(transaction.date)
+                .toLocaleString('default', { month: 'short' });
+            if (monthlyData[month]) {
+                monthlyData[month][transaction.type] += transaction.amount;
+            }
+        });
+
+        return {
+            labels: Object.keys(monthlyData),
+            incomeData: Object.values(monthlyData).map(d => d.income),
+            expenseData: Object.values(monthlyData).map(d => d.expense)
+        };
+    }
+
+    static destroyCharts() {
+        if (this.lineChart) {
+            this.lineChart.destroy();
+        }
+        if (this.pieChart) {
+            this.pieChart.destroy();
+        }
+    }
+}
+
+// Dashboard UI Manager
+class DashboardUI {
+    static updateDashboard() {
+        const transactions = TransactionManager.getTransactions();
+        this.updateStats(transactions);
+        this.updateTransactionsList(transactions);
+        ChartManager.updateCharts(transactions);
+    }
+
+    static updateStats(transactions) {
+        const totalIncome = transactions
+            .filter(t => t.type === 'income')
+            .reduce((sum, t) => sum + t.amount, 0);
+        
+        const totalExpenses = transactions
+            .filter(t => t.type === 'expense')
+            .reduce((sum, t) => sum + t.amount, 0);
+
+        document.getElementById('totalIncome').textContent = Utils.formatCurrency(totalIncome);
+        document.getElementById('totalExpenses').textContent = Utils.formatCurrency(totalExpenses);
+        document.getElementById('totalBalance').textContent = Utils.formatCurrency(totalIncome - totalExpenses);
+    }
+
+    static updateTransactionsList(transactions) {
+        const container = document.getElementById('transactionsList');
+        container.innerHTML = '';
+
+        transactions
+            .sort((a, b) => new Date(b.date) - new Date(a.date))
+            .forEach(transaction => {
+                const col = document.createElement('div');
+                col.className = 'col-md-6 animate-fade-in';
+                col.innerHTML = this.createTransactionCard(transaction);
+                container.appendChild(col);
+            });
+    }
+
+    static createTransactionCard(transaction) {
+        const isIncome = transaction.type === 'income';
+        return `
+            <div class="card transaction-card border-${isIncome ? 'success' : 'danger'}">
+                <div class="card-body">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <h5 class="card-title mb-0">${transaction.description}</h5>
+                        <div class="btn-group">
+                            <button class="btn btn-sm btn-outline-primary" onclick="DashboardUI.editTransaction(${transaction.id})">
+                                <i class="fas fa-edit"></i>
+                            </button>
+                            <button class="btn btn-sm btn-outline-danger" onclick="DashboardUI.deleteTransaction(${transaction.id})">
+                                <i class="fas fa-trash"></i>
+                            </button>
+                        </div>
+                    </div>
+                    <div class="mt-2">
+                        <span class="badge bg-${isIncome ? 'success' : 'danger'}">
+                            ${isIncome ? '+' : '-'}${Utils.formatCurrency(transaction.amount)}
+                        </span>
+                        <small class="text-muted ms-2">
+                            ${new Date(transaction.date).toLocaleDateString()}
+                        </small>
+                    </div>
+                </div>
+            </div>
+        `;
+    }
+
+    static async editTransaction(id) {
+        const transaction = TransactionManager.getTransactions().find(t => t.id === id);
+        
+        const result = await Utils.showAlert({
+            title: 'Edit Transaction',
+            html: `
+                <div class="form-group">
+                    <input id="swal-description" class="form-control mb-3" value="${transaction.description}">
+                    <input id="swal-amount" class="form-control mb-3" type="number" step="0.01" value="${transaction.amount}">
+                    <select id="swal-type" class="form-control mb-3">
+                        <option value="income" ${transaction.type === 'income' ? 'selected' : ''}>Income</option>
+                        <option value="expense" ${transaction.type === 'expense' ? 'selected' : ''}>Expense</option>
+                    </select>
+                    <input id="swal-date" class="form-control" type="date" value="${transaction.date}">
+                </div>
+            `,
+            showCancelButton: true,
+            confirmButtonText: 'Update',
+            focusConfirm: false,
+            preConfirm: () => ({
+                description: document.getElementById('swal-description').value,
+                amount: parseFloat(document.getElementById('swal-amount').value),
+                type: document.getElementById('swal-type').value,
+                date: document.getElementById('swal-date').value
+            })
+        });
+
+        if (result.value) {
+            TransactionManager.updateTransaction(id, result.value);
+            this.updateDashboard();
+        }
+    }
+
+    static async deleteTransaction(id) {
+        const result = await Utils.showAlert({
+            title: 'Are you sure?',
+            text: "You won't be able to revert this!",
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#d33',
+            cancelButtonColor: '#3085d6',
+            confirmButtonText: 'Yes, delete it!'
+        });
+
+        if (result.isConfirmed) {
+            TransactionManager.deleteTransaction(id);
+            this.updateDashboard();
+            Utils.showAlert({
+                icon: 'success',
+                title: 'Deleted!',
+                text: 'Transaction has been deleted.',
+                timer: 1500
+            });
+        }
+    }
+}
+
+// Main App Class
+class App {
+    static init() {
+        this.initializeEventListeners();
+        if (UserManager.currentUser) {
+            this.showDashboard();
+        }
+    }
+
+    static initializeEventListeners() {
+        document.getElementById('showRegister').addEventListener('click', (e) => {
+            e.preventDefault();
+            this.toggleAuthForms('register');
+        });
+
+        document.getElementById('showLogin').addEventListener('click', (e) => {
+            e.preventDefault();
+            this.toggleAuthForms('login');
+        });
+
+        document.getElementById('registerForm').addEventListener('submit', this.handleRegister.bind(this));
+        document.getElementById('loginForm').addEventListener('submit', this.handleLogin.bind(this));
+    }
+
+    static toggleAuthForms(show) {
+        const loginContainer = document.querySelector('.auth-form-container');
+        const registerContainer = document.getElementById('registerContainer');
+        
+        if (show === 'register') {
+            loginContainer.classList.add('d-none');
+            registerContainer.classList.remove('d-none');
+        } else {
+            loginContainer.classList.remove('d-none');
+            registerContainer.classList.add('d-none');
+        }
+    }
+
+    static async handleRegister(e) {
+        e.preventDefault();
+        const form = e.target;
+        const name = form.querySelector('input[type="text"]').value;
+        const email = form.querySelector('input[type="email"]').value;
+        const password = form.querySelector('input[type="password"]').value;
+
+        try {
+            await UserManager.register(name, email, password);
+            await Utils.showAlert({
+                icon: 'success',
+                title: 'Registration Successful!',
+                text: 'Please login with your credentials',
+                timer: 1500
+            });
+            this.toggleAuthForms('login');
+            form.reset();
+} catch (error) {
+            Utils.showAlert({
+                icon: 'error',
+                title: 'Registration Failed',
+                text: error.message
+            });
+        }
+    }
+
+    static async handleLogin(e) {
+        e.preventDefault();
+        const form = e.target;
+        const email = form.querySelector('input[type="email"]').value;
+        const password = form.querySelector('input[type="password"]').value;
+
+        try {
+            await UserManager.login(email, password);
+            await Utils.showAlert({
+                icon: 'success',
+                title: 'Welcome Back!',
+                timer: 1500
+            });
+            this.showDashboard();
+            form.reset();
+        } catch (error) {
+            Utils.showAlert({
+                icon: 'error',
+                title: 'Login Failed',
+                text: error.message
+            });
+        }
+    }
+
+    static showDashboard() {
+        document.getElementById('authContainer').classList.add('d-none');
+        document.getElementById('dashboardContainer').classList.remove('d-none');
+        document.getElementById('userName').textContent = UserManager.currentUser.name;
+        ChartManager.initializeCharts();
+        DashboardUI.updateDashboard();
+    }
+
+    static logout() {
+        UserManager.logout();
+        ChartManager.destroyCharts();
+        document.getElementById('authContainer').classList.remove('d-none');
+        document.getElementById('dashboardContainer').classList.add('d-none');
+        ChartManager.initializeCharts();
+    }
+}
+
+// Initialize the application when the DOM is loaded
+document.addEventListener('DOMContentLoaded', () => {
+    App.init();
+});
+    </script>
+</body>
+</html>
