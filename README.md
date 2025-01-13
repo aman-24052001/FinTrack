@@ -33,7 +33,7 @@ FinTrack is a modern, responsive web application for personal finance management
 
 ## 🚀 Live Demo
 
-You can try out FinTrack here: [Live Demo Link] (https://drive.google.com/file/d/1zxrXgn6Omqg_7owOe1lMyKA3ZRSg0L3n/view?usp=sharing)
+You can try out FinTrack here: [Live Demo Link](https://drive.google.com/file/d/1zxrXgn6Omqg_7owOe1lMyKA3ZRSg0L3n/view?usp=sharing)
 
 ## 💻 Technologies Used
 
